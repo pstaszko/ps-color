@@ -5,6 +5,7 @@
 . "$PSScriptRoot\util\Color.ps1"
 
 . "$PSScriptRoot\helpers\File.ps1"
+. "$PSScriptRoot\helpers\ErrorRecord.ps1"
 . "$PSScriptRoot\helpers\MatchInfo.ps1"
 . "$PSScriptRoot\helpers\Service.ps1"
 
@@ -41,6 +42,8 @@ function Out-Default {
 				Write-File $_;
 			} elseif ($_ -is [System.ServiceProcess.ServiceController]) {
 				Write-Service $_;
+			} elseif ($_ -is [System.Management.Automation.ErrorRecord]) {
+				Write-ErrorRecord $_;
 			} elseif ($_ -is [Microsoft.Powershell.Commands.MatchInfo]) {
 				Write-MatchInfo $_;
 			} else {

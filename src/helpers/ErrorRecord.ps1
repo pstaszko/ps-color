@@ -29,42 +29,56 @@
 
 # 	$Script:showHeader = $false;
 # }
-
+function MyWrite($labelColor, $valueColor, $label, $value){
+    if($value){
+	Write-HostColor -Value "$($label): " -ForegroundColor $labelColor #-BackgroundColor "black"
+	Write-HostColor -Value ("  $($value)") -ForegroundColor $valueColor #-BackgroundColor "black"
+	#Write-HostColor -Value ("  $($value)".trim()) -ForegroundColor $valueColor #-BackgroundColor "black"
+    }
+}
+function Info($label, $value){
+    MyWrite "purple" "white" $label $value
+}
+function Warn($label, $value){
+    MyWrite "yellow" "white" $label $value
+}
+function Error($label, $value){
+    MyWrite "red" "red" $label $value
+}
+function Success($label, $value){
+    MyWrite "green" "white" $label $value
+}
 function Write-ErrorRecord {
 	param (
 		[Parameter(Mandatory = $true, Position = 1)] $err
 	)
     $io = $err.InvocationInfo
-    Write-HostColor -Value "Custom Report for Error Record" -ForegroundColor "Green" 
-    Write-HostColor -Value "CategoryInfo: $($err.CategoryInfo)" -ForegroundColor "yellow" 
-    Write-HostColor -Value "FullyQualifiedErrorId: $($err.FullyQualifiedErrorId)" -ForegroundColor "yellow" 
-    Write-HostColor -Value "InvocationInfo: $($err.InvocationInfo)" -ForegroundColor "yellow" 
-    Write-HostColor -Value "PipelineIterationInfo: $($err.PipelineIterationInfo)" -ForegroundColor "yellow" 
-    Write-HostColor -Value "ScriptStackTrace: $($err.ScriptStackTrace)" -ForegroundColor "yellow" 
-    Write-HostColor -Value "TargetObject: $($err.TargetObject)" -ForegroundColor "yellow"
-    Write-HostColor -Value "ErrorDetails: $($err.ErrorDetails)" -ForegroundColor "yellow" 
-    Write-HostColor -Value "InvocationInfo: $($io)" -ForegroundColor "yellow" 
-    Write-HostColor -Value "--" -ForegroundColor "green" 
-    Write-HostColor -Value "Exception: $($err.Exception.message)" -ForegroundColor "yellow" 
-    Write-HostColor -Value "--" -ForegroundColor "green" 
-    
-    Write-HostColor -Value "MyCommand: $($io.MyCommand)" -ForegroundColor "Green" 
-    Write-HostColor -Value "BoundParameters: $($io.BoundParameters)" -ForegroundColor "Green" 
-    Write-HostColor -Value "UnboundArguments: $($io.UnboundArguments)" -ForegroundColor "Green" 
-    Write-HostColor -Value "ScriptLineNumber: $($io.ScriptLineNumber)" -ForegroundColor "Green" 
-    Write-HostColor -Value "OffsetInLine: $($io.OffsetInLine)" -ForegroundColor "Green" 
-    Write-HostColor -Value "HistoryId: $($io.HistoryId)" -ForegroundColor "Green" 
-    Write-HostColor -Value "ScriptName: $($io.ScriptName)" -ForegroundColor "Green" 
-    Write-HostColor -Value "Line: $($io.Line)" -ForegroundColor "Green" 
-    Write-HostColor -Value "PositionMessage: $($io.PositionMessage)" -ForegroundColor "Green" 
-    Write-HostColor -Value "PSScriptRoot: $($io.PSScriptRoot)" -ForegroundColor "Green" 
-    Write-HostColor -Value "PSCommandPath: $($io.PSCommandPath)" -ForegroundColor "Green" 
-    Write-HostColor -Value "InvocationName: $($io.InvocationName)" -ForegroundColor "Green" 
-    Write-HostColor -Value "PipelineLength: $($io.PipelineLength)" -ForegroundColor "Green" 
-    Write-HostColor -Value "PipelinePosition: $($io.PipelinePosition)" -ForegroundColor "Green" 
-    Write-HostColor -Value "ExpectingInput: $($io.ExpectingInput)" -ForegroundColor "Green" 
-    Write-HostColor -Value "CommandOrigin: $($io.CommandOrigin)" -ForegroundColor "Green" 
-    Write-HostColor -Value "DisplayScriptPosition: $($io.DisplayScriptPosition)" -ForegroundColor "Green"
-    
-    Write-HostColor -Value "End of Custom Report for Error Record" -ForegroundColor "Green" 
+    Write-HostColor -Value "Custom Report for Error Record" -ForegroundColor "Red" 
+    Success "CategoryInfo" "$($err.CategoryInfo)" 
+    Success "FullyQualifiedErrorId: $($err.FullyQualifiedErrorId)"
+    Success "PipelineIterationInfo" "$($err.PipelineIterationInfo)"
+    Error "ScriptStackTrace" "$($err.ScriptStackTrace)"
+    Error "TargetObject $($err.TargetObject)"
+    Error "ErrorDetails: $($err.ErrorDetails)"
+    Info "--"
+    Error "Exception" "$($err.Exception.message)"
+    Info "--"
+    Success "MyCommand" "$($io.MyCommand)"
+    Success "BoundParameters" "$($io.BoundParameters)"
+    Success "UnboundArguments" "$($io.UnboundArguments)"
+    Success "ScriptLineNumber" "$($io.ScriptLineNumber)"
+    Success "OffsetInLine" "$($io.OffsetInLine)"
+    Success "HistoryId" "$($io.HistoryId)"
+    Success "ScriptName" "$($io.ScriptName)"
+    Success "Line" "$($io.Line)"
+    Success "PositionMessage" "$($io.PositionMessage)"
+    Success "PSScriptRoot" "$($io.PSScriptRoot)"
+    Success "PSCommandPath" "$($io.PSCommandPath)"
+    Success "InvocationName" "$($io.InvocationName)"
+    Success "PipelineLength" "$($io.PipelineLength)"
+    Success "PipelinePosition" "$($io.PipelinePosition)"
+    Success "ExpectingInput" "$($io.ExpectingInput)"
+    Success "CommandOrigin" "$($io.CommandOrigin)"
+    Success "DisplayScriptPosition" "$($io.DisplayScriptPosition)"
+    Write-HostColor -Value "End of Custom Report for Error Record" -ForegroundColor "red"
 }

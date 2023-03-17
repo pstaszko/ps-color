@@ -3,7 +3,6 @@
 . "$PSScriptRoot\util\Path.ps1"
 . "$PSScriptRoot\util\String.ps1"
 . "$PSScriptRoot\util\Color.ps1"
-
 . "$PSScriptRoot\helpers\File.ps1"
 . "$PSScriptRoot\helpers\ErrorRecord.ps1"
 . "$PSScriptRoot\helpers\MatchInfo.ps1"
@@ -64,4 +63,6 @@ function Out-Default {
 	}
 }
 
-Export-ModuleMember -Function Out-Default;
+Export-ModuleMember -Function Out-Default
+Export-ModuleMember -Function MyWrite
+

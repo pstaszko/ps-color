@@ -30,19 +30,46 @@ function Out-Default {
 
 			$steppablePipeline = $scriptCmd.GetSteppablePipeline();
 			$steppablePipeline.Begin($PSCmdlet);
+			
+			$wrappedCmdlet = $ExecutionContext.InvokeCommand.GetCmdlet("Out-Default")
+			$sb = { & $wrappedCmdlet @PSBoundParameters }
+			$__sp = $sb.GetSteppablePipeline()
+			$__sp.Begin($pscmdlet)
+			$__all=@()
 		} catch {
 			throw
 		}
 	}
-	
 	process {
+		$do_process = $true
 		try {
 			if (($_ -is [System.IO.DirectoryInfo]) -or ($_ -is [System.IO.FileInfo])) {
 				Write-File $_;
 			} elseif ($_ -is [System.ServiceProcess.ServiceController]) {
 				Write-Service $_;
 			} elseif ($_ -is [System.Management.Automation.ErrorRecord]) {
-				Write-ErrorRecord $_;
+				if ($_.Exception -is [System.Management.Automation.CommandNotFoundException])
+				{
+					$__command = $_.Exception.CommandName
+					if($global:Capabilities.HasGit){
+						if (Get-GitStatus){
+							$branches=myGitBranches
+							if(($branches -match '^' + $__command + '$') -or ($branches -match '^/' + $__command + '$')){
+								git checkout $__command
+								$do_process = $false
+							}
+							if ($do_process){
+							}
+						}
+					}
+					if ($do_process -and (Test-Path -Path $__command -PathType container))
+					{
+						Set-Location $__command
+						$do_process = $false
+					}
+				} else {
+					Write-ErrorRecord $_;
+				}
 			} elseif ($_ -is [Microsoft.Powershell.Commands.MatchInfo]) {
 				Write-MatchInfo $_;
 			} else {

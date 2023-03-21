@@ -49,9 +49,9 @@ function Out-Default {
 				Write-Service $_;
 			} elseif ($_ -is [System.Management.Automation.ErrorRecord]) {
 				if ($global:psConfig.FormatErrors) {
-
+					Write-ErrorRecord $_;
 				} else {
-					out-host $_
+					$_ | out-host
 					if ($_.Exception -is [System.Management.Automation.CommandNotFoundException])
 					{
 						$__command = $_.Exception.CommandName

@@ -48,32 +48,30 @@ function Out-Default {
 			} elseif ($_ -is [System.ServiceProcess.ServiceController]) {
 				Write-Service $_;
 			} elseif ($_ -is [System.Management.Automation.ErrorRecord]) {
-				if ($global:psConfig.FormatErrors) {
-					Write-ErrorRecord $_;
-				} else {
-					$_ | out-host
-					if ($_.Exception -is [System.Management.Automation.CommandNotFoundException])
-					{
-						$__command = $_.Exception.CommandName
-						if($global:Capabilities.HasGit){
-							if (Get-GitStatus){
-								$branches=myGitBranches
-								if(($branches -match '^' + $__command + '$') -or ($branches -match '^/' + $__command + '$')){
-									git checkout $__command
-									$do_process = $false
-								}
-								if ($do_process){
-								}
+				if ($_.Exception -is [System.Management.Automation.CommandNotFoundException])
+				{
+					$__command = $_.Exception.CommandName
+					if($global:Capabilities.HasGit){
+						if (Get-GitStatus){
+							$branches=myGitBranches
+							if(($branches -match '^' + $__command + '$') -or ($branches -match '^/' + $__command + '$')){
+								git checkout $__command
+								$do_process = $false
+							}
+							if ($do_process){
 							}
 						}
-						if ($do_process -and (Test-Path -Path $__command -PathType container))
-						{
-							Set-Location $__command
-							$do_process = $false
-						}
-					} else {
-						Write-ErrorRecord $_;
 					}
+					if ($do_process -and (Test-Path -Path $__command -PathType container))
+					{
+						cdlog $__command
+						$do_process = $false
+					}else{
+						# $_ | out-host
+						Write-ErrorRecord $_
+					}
+				} else {
+					Write-ErrorRecord $_
 				}
 			} elseif ($_ -is [Microsoft.Powershell.Commands.MatchInfo]) {
 				Write-MatchInfo $_;

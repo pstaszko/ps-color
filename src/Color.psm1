@@ -51,7 +51,6 @@ function Out-Default {
 				if ($_.Exception -is [System.Management.Automation.CommandNotFoundException])
 				{
 					$__command = $_.Exception.CommandName.TrimStart(".\")
-					step
 					if ($do_process -and (Test-Path -Path $__command -PathType container))
 					{
 						cdlog $__command

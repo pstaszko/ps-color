@@ -32,7 +32,6 @@ function Get-FileName {
 	)
 
 	$name = $file.Name
-	$ErrorActionPreference = 'inquire'
 	if (
 		($Global:ColorSettings.File.Types.SymbolicLink.ShowTarget -eq $true) -and (($file.Attributes -is [FileAttributes]) -and ($file.Attributes -band [IO.FileAttributes]::ReparsePoint))
 	) {

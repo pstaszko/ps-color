@@ -32,10 +32,9 @@ function Get-FileName {
 	)
 
 	$name = $file.Name
-
+	$ErrorActionPreference = 'inquire'
 	if (
-		($Global:ColorSettings.File.Types.SymbolicLink.ShowTarget -eq $true) `
-		-and ($file.Attributes -band [IO.FileAttributes]::ReparsePoint)
+		($Global:ColorSettings.File.Types.SymbolicLink.ShowTarget -eq $true) -and (($file.Attributes -is [FileAttributes]) -and ($file.Attributes -band [IO.FileAttributes]::ReparsePoint))
 	) {
 		$target = $null
 
@@ -119,7 +118,7 @@ function Write-File {
 
 	Write-FileHeader $currentDirectory
 
-	if ($file.Attributes -band [IO.FileAttributes]::ReparsePoint) {
+	if (($file.Attributes -is [FileAttributes]) -and ($file.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
 		Write-ColorizedFileLine $Global:ColorSettings.File.Types.SymbolicLink.Color $file
 	} elseif ($hidden.IsMatch($file.Name)) {
 		Write-ColorizedFileLine $Global:ColorSettings.File.Types.Hidden.Color $file
